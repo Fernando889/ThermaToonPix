@@ -9,41 +9,52 @@ import platform
 from datetime import datetime
 from streamlit_webrtc import webrtc_streamer, VideoTransformerBase
 
+# Pixelation function
+
 
 def pixelate(frame, pixel_size=8, num_colors=16):
     height, width = frame.shape[:2]
     temp = cv.resize(frame, (width // pixel_size, height //
-                             pixel_size), interpolation=cv.INTER_AREA)
+                     pixel_size), interpolation=cv.INTER_NEAREST)
 
     data = temp.reshape((-1, 3)).astype(np.float32)
     criteria = (cv.TERM_CRITERIA_EPS + cv.TERM_CRITERIA_MAX_ITER, 20, 1.0)
     _, labels, centers = cv.kmeans(
-        data, num_colors, None, criteria, 10, cv.KMEANS_RANDOM_CENTERS)
+        data, num_colors, None, criteria, 10, cv.KMEANS_PP_CENTERS)
     quantized = centers[labels.flatten()].reshape(temp.shape).astype(np.uint8)
 
     pixelated = cv.resize(quantized, (width, height),
                           interpolation=cv.INTER_NEAREST)
     return pixelated
 
+# WebRTC live stream transformer
+
 
 class PixelArtTransformer(VideoTransformerBase):
     def transform(self, frame):
         img = frame.to_ndarray(format="bgr24")
         pixel = pixelate(img, pixel_size=8, num_colors=16)
-        return pixel
+
+        # Optional: upscale for crisper look (browser won’t blur it)
+        h, w = pixel.shape[:2]
+        scale = 1.5  # increase this to enlarge pixels
+        upscaled = cv.resize(
+            pixel, (int(w * scale), int(h * scale)), interpolation=cv.INTER_NEAREST)
+        return upscaled
 
 
+# Streamlit page setup
 st.set_page_config("ThermaToonPix", layout="centered")
 st.title("🧩 ThermaToonPix - Pixel Art Effect Tool")
 
-
+# System info
 current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 os_info = platform.system()
 st.markdown(f"🕒 **Time:** {current_time}")
 st.markdown(f"💻 **OS:** {os_info}")
 st.divider()
 
-
+# Tabs
 tabs = ["Image", "Video", "Live"]
 tab1, tab2, tab3 = st.columns(3)
 
@@ -59,9 +70,10 @@ with tab2:
 with tab3:
     if st.button("🎥 Live"):
         st.session_state.tab = "Live"
+
 st.divider()
 
-
+# Image tab
 if st.session_state.tab == "Image":
     st.subheader("🖼 Upload Image")
     uploaded_file = st.file_uploader(
@@ -84,7 +96,7 @@ if st.session_state.tab == "Image":
         with open(out_path, "rb") as f:
             st.download_button("💾 Download", f, file_name="pixel_image.png")
 
-
+# Video tab
 elif st.session_state.tab == "Video":
     st.subheader("📼 Upload Video")
     video_file = st.file_uploader("Upload a video", type=["mp4", "avi", "mov"])
@@ -124,7 +136,7 @@ elif st.session_state.tab == "Video":
         with open(out_path, "rb") as f:
             st.download_button("💾 Download", f, file_name="pixel_output.mp4")
 
-
+# Live tab
 elif st.session_state.tab == "Live":
     st.subheader("🎥 Live Pixel Art Camera")
     try:

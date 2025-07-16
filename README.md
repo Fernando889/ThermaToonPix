@@ -41,7 +41,7 @@ pip install streamlit opencv-contrib-python-headless numpy Pillow streamlit-webr
 To launch ThermaToonPix locally:
 
 ```bash
-streamlit run streamlit_app.py
+streamlit run Homepage.py
 ```
 
 > Make sure your webcam is connected if you want to try the live stream mode!

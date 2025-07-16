@@ -1,8 +1,7 @@
-
 # 🎨 ThermaToonPix
 
 **ThermaToonPix** stands for **Thermal Vision**, **Cartoon**, and **Pixel Art Effects**.  
-It is a lightweight and interactive media transformation tool that lets you apply cool visual effects — including heatmap simulation, cartoon-style rendering, and pixel art stylization — to **images**, **video files**, and **live webcam streams**.  
+It is a lightweight and interactive media transformation tool that lets you apply cool visual effects — including heatmap simulation, cartoon-style rendering, and pixel art stylization — to **images**, **video files**, and **live webcam streams**.
 
 Built with **OpenCV** for backend processing and **Streamlit** for an intuitive web-based interface.
 
@@ -56,28 +55,6 @@ streamlit run streamlit_app.py
 - [NumPy](https://numpy.org/) — array-based processing
 - [Pillow](https://python-pillow.org/) — image processing
 - [streamlit-webrtc](https://github.com/whitphx/streamlit-webrtc) — real-time video/audio streaming via WebRTC
-
----
-
-## 📸 Screenshots
-
-> _(Add screenshots or GIFs here to show off the effects in action!)_
-
----
-
-## 📄 License
-
-This project is open-source. Feel free to fork, modify, and use it under the terms of the **MIT License**.
-
----
-
-## 🙌 Contributions
-
-Contributions are welcome! Feel free to:
-
-- Submit pull requests
-- Report bugs or issues
-- Suggest new features
 
 ---
 

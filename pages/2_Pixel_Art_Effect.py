@@ -29,7 +29,7 @@ def pixelate(frame, pixel_size=8, num_colors=16):
 class PixelArtTransformer(VideoTransformerBase):
     def transform(self, frame):
         img = frame.to_ndarray(format="bgr24")
-        pixel = pixelate(img, pixel_size=20, num_colors=16)
+        pixel = pixelate(img, pixel_size=8, num_colors=16)
         return pixel
 
 
@@ -72,7 +72,7 @@ if st.session_state.tab == "Image":
         img_bgr = cv.cvtColor(img_np, cv.COLOR_RGB2BGR)
 
         start = time.time()
-        pixel_img = pixelate(img_bgr, pixel_size=20, num_colors=16)
+        pixel_img = pixelate(img_bgr, pixel_size=8, num_colors=16)
         elapsed = time.time() - start
 
         st.image(cv.cvtColor(pixel_img, cv.COLOR_BGR2RGB),
@@ -107,7 +107,7 @@ elif st.session_state.tab == "Video":
             ret, frame = cap.read()
             if not ret:
                 break
-            pixel_frame = pixelate(frame, pixel_size=20, num_colors=16)
+            pixel_frame = pixelate(frame, pixel_size=8, num_colors=16)
             if out is None:
                 h, w, _ = pixel_frame.shape
                 out = cv.VideoWriter(out_path, fourcc, 20.0, (w, h))
